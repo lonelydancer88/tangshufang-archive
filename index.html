@@ -36,11 +36,27 @@
   #view img{max-width:100%}
   #view blockquote{border-left:3px solid var(--line);margin:0;padding-left:12px;color:#555}
   .yr{padding:6px 24px;background:#f0f0f0;font-weight:600;font-size:13px;position:sticky;top:0}
+  #back{display:none;margin:0 0 12px;padding:9px 16px;font-size:15px;border:1px solid var(--line);
+        border-radius:8px;background:#fff;color:var(--fg);cursor:pointer}
+  @media (max-width: 768px){
+    body{font-size:16px;line-height:1.7}
+    #bar{padding:8px 12px}
+    #q{font-size:16px;padding:10px 14px}
+    .wrap{display:block;height:auto}
+    #list{flex:none;width:100%;height:calc(100vh - 112px);border-right:none}
+    #list.hide{display:none}
+    #view{position:fixed;inset:0;background:var(--bg);padding:18px 16px;overflow:auto;z-index:30;display:none}
+    #view.show{display:block}
+    #back{display:inline-block}
+    #view article{padding:0;max-width:100%}
+    .item{padding:13px 16px}
+    .yr{position:sticky;top:0;z-index:1}
+  }
 </style></head>
 <body>
 <header>
   <h1>唐书房 + 唐书院 文章归档</h1>
-  <div class="sub">来源:唐朝投资知识库(laotang.pages.dev) · 抓取口径:2016-09 至 2024-12 · 仅供个人学习备份</div>
+  <div class="sub">来源:唐朝投资知识库(laotang.pages.dev) · 收录:2016 至 2026 · 仅供个人学习备份</div>
   <div class="stats">
     <span>共 <b>1756</b> 篇</span>
     <span>按年:2016年 87 · 2017年 158 · 2018年 154 · 2019年 146 · 2020年 231 · 2021年 180 · 2022年 190 · 2023年 133 · 2024年 140 · 2025年 308 · 2026年 29</span>
@@ -1809,7 +1825,10 @@
 <li class="item" data-title="2026年第24周回顾" data-cat="weekly" data-file="2026/20260613_2026年第24周回顾.md" data-date="2026-06-13"><span class="d">2026-06-13</span><a class="t" href="#" onclick="return openArt(this)">2026年第24周回顾</a><span class="c">weekly</span></li>
 <li class="item" data-title="2026年第25周回顾上" data-cat="weekly" data-file="2026/20260619_2026年第25周回顾上.md" data-date="2026-06-19"><span class="d">2026-06-19</span><a class="t" href="#" onclick="return openArt(this)">2026年第25周回顾上</a><span class="c">weekly</span></li>
   </div>
-  <div id="view"><div class="empty">← 点击左侧任意文章标题,在此阅读全文</div></div>
+  <div id="view">
+    <button id="back" onclick="back()">← 返回列表</button>
+    <div id="view-body"><div class="empty">← 点击左侧任意文章标题,在此阅读全文</div></div>
+  </div>
 </div>
 <script>
 function filter(){
@@ -1827,15 +1846,20 @@ function filter(){
 }
 function openArt(a){
   const li=a.closest('.item'); const file=li.dataset.file;
-  const view=document.getElementById('view');
-  view.innerHTML='<div class="empty">加载中…</div>';
+  const body=document.getElementById('view-body');
+  body.innerHTML='<div class="empty">加载中…</div>';
   fetch(file).then(r=>r.text()).then(txt=>{
     txt=txt.replace(/^---[\s\S]*?---/,'');
-    view.innerHTML='<article>'+marked.parse(txt)+'</article>';
-    view.scrollTop=0;
-    const h=view.querySelector('article h1'); if(h) document.title=h.textContent+' · 唐书房归档';
-  }).catch(e=>{ view.innerHTML='<div class="empty">无法加载 '+file+'<br><small>'+e+'</small></div>'; });
+    body.innerHTML='<article>'+marked.parse(txt)+'</article>';
+    const v=document.getElementById('view'); v.scrollTop=0;
+    if (window.matchMedia('(max-width: 768px)').matches){ v.classList.add('show'); document.getElementById('list').classList.add('hide'); }
+    const h=body.querySelector('article h1'); if(h) document.title=h.textContent+' · 唐书房归档';
+  }).catch(e=>{ body.innerHTML='<div class="empty">无法加载 '+file+'<br><small>'+e+'</small></div>'; });
   return false;
+}
+function back(){
+  const v=document.getElementById('view'); v.classList.remove('show');
+  document.getElementById('list').classList.remove('hide');
 }
 </script>
 </body></html>
