@@ -53,12 +53,18 @@
     .wrap{display:block;height:auto}
     #list{flex:none;width:100%;height:calc(100vh - 112px);border-right:none}
     #list.hide{display:none}
-    #view{position:fixed;inset:0;background:var(--bg);padding:18px 16px;overflow:auto;z-index:30;display:none}
+    #view{width:100%;min-height:100vh;background:var(--bg);padding:18px 16px;overflow:auto;display:none}
     #view.show{display:block}
     #back{display:inline-block}
     #view article{padding:0;max-width:100%}
     .item{padding:13px 16px}
     .yr{position:sticky;top:0;z-index:1}
+    /* 移动端文章阅读模式: body 加 .article-open 时隐藏其他一切, 只留 #view 全屏 */
+    body.article-open > header,
+    body.article-open > #bar,
+    body.article-open > .wrap > #list { display:none!important }
+    body.article-open > .wrap { display:block!important; height:auto!important; padding:0 }
+    body.article-open > .wrap > #view { display:block!important; width:100%!important; min-height:100vh!important; position:static!important; background:#fafafa; padding:18px 16px; overflow:auto }
   }
 </style></head>
 <body>
@@ -1882,14 +1888,17 @@ function openArt(a){
     if(!md){ body.innerHTML='<div class="empty">渲染器(marked)未加载，请检查网络后刷新页面</div>'; return; }
     body.innerHTML='<article>'+md(txt)+'</article><button class="back-bottom" onclick="back()">↑ 返回首页</button>';
     const v=document.getElementById('view'); v.scrollTop=0;
-    if (window.matchMedia('(max-width: 768px)').matches){ v.classList.add('show'); document.getElementById('list').classList.add('hide'); }
+    if (window.matchMedia('(max-width: 768px)').matches){
+      document.body.classList.add('article-open');
+      window.scrollTo(0, 0);
+    }
     const h=body.querySelector('article h1'); if(h) document.title=h.textContent+' · 唐书房归档';
   }).catch(e=>{ body.innerHTML='<div class="empty">无法加载 '+file+'<br><small>'+e+'</small></div>'; });
   return false;
 }
 function back(){
-  const v=document.getElementById('view'); v.classList.remove('show');
-  const l=document.getElementById('list'); l.classList.remove('hide'); l.scrollTop=0;
+  document.body.classList.remove('article-open');
+  const l=document.getElementById('list'); l.scrollTop=0;
 }
 // 整行可点: 点日期/分类/标题/行内空白都能打开文章(移动端尤其重要, 否则只点中文字才有效)
 document.getElementById('list').addEventListener('click', function(e){
