@@ -42,6 +42,10 @@
   .yr{padding:6px 24px;background:#f0f0f0;font-weight:600;font-size:13px;position:sticky;top:0}
   #back{display:none;margin:0 0 12px;padding:9px 16px;font-size:15px;border:1px solid var(--line);
         border-radius:8px;background:#fff;color:var(--fg);cursor:pointer}
+  #back:hover{background:var(--bg)}
+  .back-bottom{display:block;max-width:820px;margin:32px auto 14px;padding:12px 22px;font-size:15px;
+        border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--fg);cursor:pointer;text-align:center}
+  .back-bottom:hover{background:var(--bg)}
   @media (max-width: 768px){
     body{font-size:16px;line-height:1.7}
     #bar{padding:8px 12px}
@@ -1828,8 +1832,7 @@
 <li class="item" data-title="2026年第23周回顾" data-cat="weekly" data-file="2026/20260606_2026年第23周回顾.md" data-date="2026-06-06"><span class="d">2026-06-06</span><a class="t" href="#" onclick="return openArt(this)">2026年第23周回顾</a><span class="c">weekly</span></li>
 <li class="item" data-title="2026年第24周回顾" data-cat="weekly" data-file="2026/20260613_2026年第24周回顾.md" data-date="2026-06-13"><span class="d">2026-06-13</span><a class="t" href="#" onclick="return openArt(this)">2026年第24周回顾</a><span class="c">weekly</span></li>
 <li class="item" data-title="2026年第25周回顾上" data-cat="weekly" data-file="2026/20260619_2026年第25周回顾上.md" data-date="2026-06-19"><span class="d">2026-06-19</span><a class="t" href="#" onclick="return openArt(this)">2026年第25周回顾上</a><span class="c">weekly</span></li>
-  </div>
-  <div id="view">
+<div id="view">
     <button id="back" onclick="back()">← 返回列表</button>
     <div id="view-body"><div class="empty">← 点击左侧任意文章标题,在此阅读全文</div></div>
   </div>
@@ -1872,7 +1875,7 @@ function openArt(a){
   fetch(file).then(r=>r.text()).then(txt=>{
     txt=txt.replace(/^---[\s\S]*?---/,'');
     txt=txt.replace(/(?<!\\)~/g,'\\~');  // 幂等: 已是\~的不再转。源文件已转义,渲染层不重复转;未来未转义的新文也能兜底
-    body.innerHTML='<article>'+marked.parse(txt)+'</article>';
+    body.innerHTML='<article>'+marked.parse(txt)+'</article><button class="back-bottom" onclick="back()">↑ 返回首页</button>';
     const v=document.getElementById('view'); v.scrollTop=0;
     if (window.matchMedia('(max-width: 768px)').matches){ v.classList.add('show'); document.getElementById('list').classList.add('hide'); }
     const h=body.querySelector('article h1'); if(h) document.title=h.textContent+' · 唐书房归档';
@@ -1881,7 +1884,7 @@ function openArt(a){
 }
 function back(){
   const v=document.getElementById('view'); v.classList.remove('show');
-  document.getElementById('list').classList.remove('hide');
+  const l=document.getElementById('list'); l.classList.remove('hide'); l.scrollTop=0;
 }
 renderChips();
 </script>
