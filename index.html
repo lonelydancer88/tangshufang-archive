@@ -2,7 +2,7 @@
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>唐书房 + 唐书院 文章归档</title>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="marked.min.js" onerror="(function(){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/marked@18.0.11/marked.min.js';document.head.appendChild(s);})()"></script>
 <style>
   :root{--bg:#fafafa;--fg:#1f2328;--muted:#6b7280;--line:#e5e7eb;--acc:#b91c1c;--hl:#fff7e6}
   *{box-sizing:border-box}
@@ -1872,10 +1872,15 @@ function openArt(a){
   const li=a.closest('.item'); const file=li.dataset.file;
   const body=document.getElementById('view-body');
   body.innerHTML='<div class="empty">加载中…</div>';
-  fetch(file).then(r=>r.text()).then(txt=>{
+  fetch(file).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); }).then(txt=>{
     txt=txt.replace(/^---[\s\S]*?---/,'');
-    txt=txt.replace(/(?<!\\)~/g,'\\~');  // 幂等: 已是\~的不再转。源文件已转义,渲染层不重复转;未来未转义的新文也能兜底
-    body.innerHTML='<article>'+marked.parse(txt)+'</article><button class="back-bottom" onclick="back()">↑ 返回首页</button>';
+    // iOS-safe 转义: 先占位已转义的\~, 再转义剩余~, 最后还原 -> 等价于 /(?<!\\)~/g/ 但兼容老Safari/iOS(不支持后行断言)
+    txt=txt.replace(/\\~/g,'\u0001');
+    txt=txt.replace(/~/g,'\\~');
+    txt=txt.replace(/\u0001/g,'\\~');
+    const md = (window.marked && marked.parse) ? marked.parse.bind(marked) : (window.marked ? marked : null);
+    if(!md){ body.innerHTML='<div class="empty">渲染器(marked)未加载，请检查网络后刷新页面</div>'; return; }
+    body.innerHTML='<article>'+md(txt)+'</article><button class="back-bottom" onclick="back()">↑ 返回首页</button>';
     const v=document.getElementById('view'); v.scrollTop=0;
     if (window.matchMedia('(max-width: 768px)').matches){ v.classList.add('show'); document.getElementById('list').classList.add('hide'); }
     const h=body.querySelector('article h1'); if(h) document.title=h.textContent+' · 唐书房归档';
