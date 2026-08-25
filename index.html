@@ -60,7 +60,6 @@
   <div class="stats">
     <span>共 <b>1756</b> 篇</span>
     <span>按年:2016年 87 · 2017年 158 · 2018年 154 · 2019年 146 · 2020年 231 · 2021年 180 · 2022年 190 · 2023年 133 · 2024年 140 · 2025年 308 · 2026年 29</span>
-    
   </div>
   <div class="badges"><span class="badge">essays: 588</span> <span class="badge">weekly: 320</span> <span class="badge">company-analysis: 214</span> <span class="badge">shiyi: 207</span> <span class="badge">berkshire: 168</span> <span class="badge">investment-ideas: 108</span> <span class="badge">reading-notes: 54</span> <span class="badge">bamang: 42</span> <span class="badge">trading: 24</span> <span class="badge">serial: 21</span> <span class="badge">life: 10</span></div>
 </header>
@@ -68,7 +67,7 @@
 <div class="wrap">
   <div id="list">
     <div class="yr">全部文章(按时间排序)</div>
-    <li class="item" data-title="股票的本质" data-cat="essays" data-file="2016/20160903_股票的本质.md" data-date="2016-09-03"><span class="d">2016-09-03</span><a class="t" href="#" onclick="return openArt(this)">股票的本质</a><span class="c">essays</span></li>
+<li class="item" data-title="股票的本质" data-cat="essays" data-file="2016/20160903_股票的本质.md" data-date="2016-09-03"><span class="d">2016-09-03</span><a class="t" href="#" onclick="return openArt(this)">股票的本质</a><span class="c">essays</span></li>
 <li class="item" data-title="聊聊估值（上）" data-cat="investment-ideas" data-file="2016/20160904_聊聊估值（上）.md" data-date="2016-09-04"><span class="d">2016-09-04</span><a class="t" href="#" onclick="return openArt(this)">聊聊估值（上）</a><span class="c">investment-ideas</span></li>
 <li class="item" data-title="聊聊估值（下）" data-cat="investment-ideas" data-file="2016/20160905_聊聊估值（下）.md" data-date="2016-09-05"><span class="d">2016-09-05</span><a class="t" href="#" onclick="return openArt(this)">聊聊估值（下）</a><span class="c">investment-ideas</span></li>
 <li class="item" data-title="聊聊估值（续）" data-cat="investment-ideas" data-file="2016/20160906_聊聊估值（续）.md" data-date="2016-09-06"><span class="d">2016-09-06</span><a class="t" href="#" onclick="return openArt(this)">聊聊估值（续）</a><span class="c">investment-ideas</span></li>
@@ -1850,6 +1849,7 @@ function openArt(a){
   body.innerHTML='<div class="empty">加载中…</div>';
   fetch(file).then(r=>r.text()).then(txt=>{
     txt=txt.replace(/^---[\s\S]*?---/,'');
+    txt=txt.replace(/~~/g,'\\~\\~');  // 老唐原文里的 ~~ 是口语/排版符号,非删除线标记
     body.innerHTML='<article>'+marked.parse(txt)+'</article>';
     const v=document.getElementById('view'); v.scrollTop=0;
     if (window.matchMedia('(max-width: 768px)').matches){ v.classList.add('show'); document.getElementById('list').classList.add('hide'); }
