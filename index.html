@@ -1891,6 +1891,14 @@ function back(){
   const v=document.getElementById('view'); v.classList.remove('show');
   const l=document.getElementById('list'); l.classList.remove('hide'); l.scrollTop=0;
 }
+// 整行可点: 点日期/分类/标题/行内空白都能打开文章(移动端尤其重要, 否则只点中文字才有效)
+document.getElementById('list').addEventListener('click', function(e){
+  const li = e.target.closest('.item');
+  if(!li) return;
+  if(e.target.closest('a.t')) return; // 标题文字由自身的 onclick 处理, 避免重复触发
+  openArt(li);
+  e.preventDefault();
+});
 renderChips();
 </script>
 </body></html>
