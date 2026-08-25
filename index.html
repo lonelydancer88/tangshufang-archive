@@ -1871,7 +1871,7 @@ function openArt(a){
   body.innerHTML='<div class="empty">加载中…</div>';
   fetch(file).then(r=>r.text()).then(txt=>{
     txt=txt.replace(/^---[\s\S]*?---/,'');
-    txt=txt.replace(/~~/g,'\\~\\~');  // 老唐原文里的 ~~ 是口语/排版符号,非删除线标记
+    txt=txt.replace(/~/g,'\\~');  // 老唐用~表示区间(如3%~4%、25~30倍),marked默认单~删除线会把相邻~配对误划删除线;全部转义为字面~
     body.innerHTML='<article>'+marked.parse(txt)+'</article>';
     const v=document.getElementById('view'); v.scrollTop=0;
     if (window.matchMedia('(max-width: 768px)').matches){ v.classList.add('show'); document.getElementById('list').classList.add('hide'); }
