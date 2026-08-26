@@ -1886,6 +1886,7 @@ function filter(){
     } else { t.innerHTML=t.textContent; }
   });
   document.getElementById('cnt').innerHTML='<b>'+shown+'</b> / 1756 篇';
+  try{ localStorage.setItem('tsfa_f', JSON.stringify({c:curCat,y:curYear,q:document.getElementById('q').value})); }catch(e){}
 }
 function openArt(a){
   const li=a.closest('.item'); const file=li.dataset.file;
@@ -1921,6 +1922,12 @@ document.getElementById('list').addEventListener('click', function(e){
   openArt(li);
   e.preventDefault();
 });
+// 恢复上次的筛选状态(从文章页返回或再次访问时保留分类/年份/搜索词)
+try{
+  const _s=JSON.parse(localStorage.getItem('tsfa_f'));
+  if(_s){ curCat=_s.c||''; curYear=_s.y||''; document.getElementById('q').value=_s.q||''; }
+}catch(e){}
 renderChips();
+filter();
 </script>
 </body></html>
