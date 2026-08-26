@@ -1929,5 +1929,18 @@ try{
 }catch(e){}
 renderChips();
 filter();
+// 列表滚动位置: 滚动时节流保存, 加载后恢复(返回首页时回到之前的位置)
+(function(){
+  const list=document.getElementById('list');
+  let t=null;
+  list.addEventListener('scroll', function(){
+    if(t) clearTimeout(t);
+    t=setTimeout(function(){ try{ localStorage.setItem('tsfa_st', String(list.scrollTop)); }catch(e){} }, 200);
+  });
+  try{
+    const _st=parseInt(localStorage.getItem('tsfa_st')||'0', 10);
+    if(_st>0) setTimeout(function(){ list.scrollTop=_st; }, 0);
+  }catch(e){}
+})();
 </script>
 </body></html>
