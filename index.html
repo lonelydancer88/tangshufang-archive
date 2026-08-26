@@ -1882,9 +1882,12 @@ function filter(){
     li.style.display=hit?'':'none';
     if(hit) shown++;
     const t=li.querySelector('.t');
-    if(k && hit && hay.includes(k)){
-      const i=t.textContent.toLowerCase().indexOf(k);
-      t.innerHTML=t.textContent.slice(0,i)+'<mark>'+t.textContent.slice(i,i+k.length)+'</mark>'+t.textContent.slice(i+k.length);
+    if(k && hit){
+      const ti=t.textContent.toLowerCase();
+      if(ti.includes(k)){
+        const i=ti.indexOf(k);
+        t.innerHTML=t.textContent.slice(0,i)+'<mark>'+t.textContent.slice(i,i+k.length)+'</mark>'+t.textContent.slice(i+k.length);
+      } else { t.innerHTML=t.textContent; }
     } else { t.innerHTML=t.textContent; }
   });
   document.getElementById('cnt').innerHTML='<b>'+shown+'</b> / 1756 篇';
