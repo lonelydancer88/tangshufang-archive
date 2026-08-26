@@ -46,6 +46,7 @@
   .item .t{color:var(--fg);text-decoration:none}
   .item .c{float:right;color:#9aa0a6;font-size:11px}
   #view{flex:1;overflow:auto;padding:28px 40px}
+  #view .back-bottom{display:none} /* 桌面端双栏, 不需要返回按钮(移动端静态页才有) */
   #view .empty{color:var(--muted);margin-top:40px;text-align:center}
   #view article{max-width:820px;margin:0 auto}
   #view h1,#view h2,#view h3{color:var(--fg)}
@@ -1914,13 +1915,18 @@ function back(){
   document.body.classList.remove('article-open');
   const l=document.getElementById('list'); l.scrollTop=0;
 }
-// 整行可点: 点日期/分类/标题/行内空白都能打开文章(移动端尤其重要, 否则只点中文字才有效)
+// 点击行: 桌面端(>768px)右侧面板内联展示, 不跳转; 移动端(≤768px)走静态页跳转
 document.getElementById('list').addEventListener('click', function(e){
   const li = e.target.closest('.item');
   if(!li) return;
-  if(e.target.closest('a.t')) return; // 标题文字由自身的 onclick 处理, 避免重复触发
-  openArt(li);
+  if (window.matchMedia('(max-width: 768px)').matches){
+    // 移动端: 标题链接正常跳转; 点日期/分类/行内空白则模拟点击标题链接跳转到静态页
+    const a=li.querySelector('a.t');
+    if(a && !e.target.closest('a.t')) a.click();
+    return;
+  }
   e.preventDefault();
+  openArt(li);
 });
 // 恢复上次的筛选状态(从文章页返回或再次访问时保留分类/年份/搜索词)
 try{
